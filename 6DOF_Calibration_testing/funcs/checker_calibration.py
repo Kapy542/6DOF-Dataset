@@ -82,3 +82,8 @@ def checher_points_found():
 
 # Is this frame good for calibration based on checker detection
 def is_good_frame():
+    return False
+
+# Calibrate 
+def calibrate():
+    return False
