@@ -1,0 +1,14 @@
+Esync synchronisation box [opti] is used in order to sync MoCap and cameras. In Motive properiate fps can be selected which is feeded to external devices and MoCap cameras themselves. In order to start recoring at the same time in the both systems, output signal can be set to gated which means it sends signal only when MoCap is recording (recording button is pressed in the software). Selected signal is feeded constantly to MoCap cameras and that cannot be changed.
+
+Biggest reason why cameras and MoCap system can't be used with same trigger signal is because it is not possible to run optitrack system below 40 fps and on the other hand max fps for ToF is 20 fps[]. Other is that it is always good to have higher fps for MoCap since it leads to better tracking quality (). 
+
+Esync also offers a possibility to divide and multiply frequency of selected trigger signal to be suitable for optitracks (20 -> 100fps). This modified signal 100Hz is feeded straight to MoCap cameras and original (20Hz) can be feeded to color and depth cameras. However there is a problem when MoCap and output signal have different frequencies (image below). Since MoCap is contiously receiving trigger signal and exposing based on that. Depending on which phase mocap is when record signal is pressed, there might be 0-4 frames in mocap side before cameras expose their first frame.(image below, Indicates trigger signal with rising trigger edges and MoCap expoure times. If pressing happens at just right time -> cameras start at the same time. If MoCap still has some exposures to do before actual trigger edge comes -> there will be that many frames more recorded by Motive than by cameras )
+
+Solution is to do trigger signal manipulation by myself.
+Original sync signal is set to 100Hz which is then feeded to MoCap cameras without manipulation. And instead of providing original trigger signal to Color/Depth cameras, gated exposure time of Optitracks is used, which is also possible(image below). This means that eSync sets trigger signal high whenever MoCap cameras are exposing, but only when recording in ON (Image below). This also simplifies timing characteristics of ToF and Mocap. Because feeded trigger signal and times when MoCap cameras are actually exposing are not the same. By default there is a delay in triggering so that exposure happens in the middle of the frame period[opti] (Image below). Now that we use gated exposure time we dont need to think about that delay.
+
+Depth and color cameras exposes only on avery other trigger edge (image).
+
+
+
+ToF and MoCap cameras both work on IR spectrum and emit bright IR light. This means that they will influence eachother if they are triggered simultanoulsy. So when there have to be some delay when triggering depth camera so that exposure times of two IR systems does not overlap (image below). This delay is easy to add in Gige SDK or software.

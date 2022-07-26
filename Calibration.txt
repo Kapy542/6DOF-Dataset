@@ -1,0 +1,23 @@
+Goal is to use ready packages as much as possible. Python OpenCV camera calibration tool for RGB ToF Stereo Calibration with dotted retroreflective checker board. (So it is well visible and accurate in ToF's intensity image). In order to calibrate and find transformation between RGB and optitrack system which has it own coordinate space same checker is used. We know dot's pixel coordinates in RGB image by running calibration tool for it. We also know dot's position in 3D space in optitrack coordinate system. Solving transformation between RGB camera center and ooptitrack coordinates is a perspective-n-point problem which can be solved with opencv's (cv::SOLVEPNP_ITERATIVE) method. Function is based on a Levenberg-Marquardt optimization and DLT algorithm [1].
+OR 
+(cv::SOLVEPNP_EPNP) Method has been introduced by F. Moreno-Noguer, V. Lepetit and P. Fua in the paper "EPnP: Efficient Perspective-n-Point Camera Pose Estimation" ([140]).
+!!! Ei tarkka, älä käytä !!!
+OR
+With SOLVEPNP_IPPE input points must be >= 4 and object points must be coplanar. (Same as camera calibrator uses to get pose?)
+
+TAI 
+
+? Vie pisteet/pallot kamerasta 3d ?
+% Aja icp n läpi mocap datan kanssa ?
+
+? Run on few images ?
+? Remove outlier transformations ?
+? Average transformations ?
+TAI
+? lisää vaan listaan parit eri kuvistas, ikää kuin yksi kuva jossa paljon pisteitä ?
+
+
+
+Because RGB has slightly bigger field-of-view than ToF, different images are used for stereo and RGB intrinsic calibration. In stereo calibration Checker is moved in the space so that it is always visible to both cameras and covers still as much of the image as possible. In optitrack calibration checker is shown only to RGB camera and again as much coverage as possible. Now when we don't need to care about ToF overlap, we can cover whole RGB image and therefore we can expect better calibration results. For this reason.
+
+In short stereo extrinsics and ToF intrinsics are calculated from stereo images. RGB intrinsics and RGB-MoCap transformation are calulated from RGB-MoCap data pairs.
