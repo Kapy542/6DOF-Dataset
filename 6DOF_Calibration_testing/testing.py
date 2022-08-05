@@ -7,7 +7,7 @@ import cv2
 import matplotlib.pyplot as plt
 from funcs.ImgReader import ImgReader
 from funcs.mocap import read_csv, get_xyz, get_checker_coords
-from funcs.checker_calibration import create_detector, detect_points, draw_points
+from funcs.checker_calibration import create_detector, detect_points, draw_points, remove_outliers, order_checkerpoints
 import argparse
 import os
 # %matplotlib qt
@@ -29,21 +29,20 @@ out_dir = os.path.join(out_path, subject_name)
 # Read MoCap data
 df = read_csv(take_folder, take_name)
 
-# idx = 180 # Hyvä kuva ilman motionblurria
-# idx = 320 # Hyvä kuva ilman motionblurria
-# idx = 446 # Hyvä kuva ilman motionblurria
-# idx = 485 # Hyvä kuva ilman motionblurria
-# idx = 500 # Hyvä kuva ilman motionblurria
-# idx = 600 # Hyvä kuva ilman motionblurria
-# idx = 824 # Hyvä kuva ilman motionblurria
-# idx = 845 # Hyvä kuva ilman motionblurria
-# idx = 862 # Hyvä kuva ilman motionblurria
-# idx = 870 # Hyvä kuva ilman motionblurria
-# idx = 200 # Motion blurria
-# idx = 340 # Motion blurria
-# idx = 360 # Motion blurria
-# idx = 950
-idxs = [180,320,446,485,500,600,824,845,862,870,]
+idx = 180 # Hyvä kuva ilman motionblurria
+#idx = 320 # Hyvä kuva ilman motionblurria
+#idx = 446 # Hyvä kuva ilman motionblurria
+#idx = 485 # Hyvä kuva ilman motionblurria
+#idx = 500 # Hyvä kuva ilman motionblurria
+#idx = 600 # Hyvä kuva ilman motionblurria
+#idx = 824 # Hyvä kuva ilman motionblurria
+#idx = 845 # Hyvä kuva ilman motionblurria
+#idx = 862 # Hyvä kuva ilman motionblurria
+#idx = 870 # Hyvä kuva ilman motionblurria
+#idx = 200 # Motion blurria
+#idx = 340 # Motion blurria
+#idx = 360 # Motion blurria
+idxs = [180,320,446,485,500,600,824,845,862,870]
 
 # Img reader to read raw images
 img_reader = ImgReader(take_path)
@@ -55,11 +54,21 @@ detector = create_detector()
 keypoints = detect_points(img, detector)
 img_with_points = draw_points(img, keypoints)
 
-# cv2.namedWindow('window', cv2.WINDOW_NORMAL)
-# cv2.imshow("window", img_with_points)       
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-plt.imshow(img_with_points)
+cv2.namedWindow('window', cv2.WINDOW_NORMAL)
+cv2.imshow("window", img_with_points)       
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+#plt.imshow(img_with_points)
+
+
+parsed_keypoints = remove_outliers(keypoints)
+ordered_keypoints = order_checkerpoints(parsed_keypoints)
+img_with_points = draw_points(img, ordered_keypoints)
+
+cv2.namedWindow('window', cv2.WINDOW_NORMAL)
+cv2.imshow("window", img_with_points)       
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
 del img_reader
 

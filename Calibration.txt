@@ -5,6 +5,9 @@ With high value on inertia filter images with high motion blur can be filtered o
 Motion blur can be caused by moving the checker to new position or small wiggling after that. If there are multiple sequentical images with all blobs well visible (no motion blur) middle one is used in the calibration.
 Checker is on tripod so in there should plenty images with zero motion blur an those are used by picking image from the center of the stream where checker stopped and checker started moving. idx to use = first_idx + (last_idx - first_idx)/2.
 
+Images which have more than total number of blobs 35 are then . Keypoints are parsed so that only 35 blobs are left. This is done by calculating every blob's distance from the center of mass of the blobs. 35 blobs closest to the center are chosen as checker blobs. This is not foolsafe but false blobs can be detected later in the calibration files and in that case image is just discarded.  
+
+Order points so that blob in the top left is number one and blob beneath it is number two. Bottom right is last one. This is simply done by multiplying every blob's x-coordinate by 5 which is number of blobs in a one column. After that x and y coordinates are summed together and ordered from small to large. This results an ordered list of blob coordinates. Does not work is checker board is in very exrteme angle but this is not a problem since it should be avoided any way. 
 
 And then run camera calibration https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html
 

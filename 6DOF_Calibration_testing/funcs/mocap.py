@@ -10,6 +10,7 @@ def read_csv(take_folder, take_name):
     df = pandas.read_csv(path, header=[2,5])
     return df
 
+# Exctract marker's 3d position from dataframe
 def get_xyz(idx, idx_x, idx_y, df):
     col = "checker:" + str(idx_x) + "_" + str(idx_y)
     cols = df.xs(col, axis=1)
@@ -19,6 +20,7 @@ def get_xyz(idx, idx_x, idx_y, df):
     xyz = np.array( [xs[idx], ys[idx], zs[idx]] )
     return xyz
 
+# Get all checker marker coordinates on particular index
 def get_checker_coords(idx, df):
     coords = np.zeros([5*7,3])
     for x in range(0,7):
