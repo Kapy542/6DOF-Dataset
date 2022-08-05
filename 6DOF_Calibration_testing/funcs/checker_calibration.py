@@ -30,18 +30,18 @@ def create_detector():
     # Filter by Circularity 
     # TODO: Check optimal values
     params.filterByCircularity = True
-    params.minCircularity = 0.8
+    params.minCircularity = 0.6 # 0.8
     
     # Filter by Convexity
     # TODO: Check optimal values
     params.filterByConvexity = True
-    params.minConvexity = 0.9
+    params.minConvexity = 0.9 # 0.9
     
     # Filter by Inertia
     # TODO: Could be as strict as possible to filter out frames with motion blur
     # Now when testing with handheld checker, don't use
     params.filterByInertia = True
-    params.minInertiaRatio = 0.1
+    params.minInertiaRatio = 0.4
     
     # Create a detector with the parameters
     detector = cv2.SimpleBlobDetector_create(params)
@@ -64,10 +64,8 @@ def draw_points(img, keypoints):
     img_with_points = cv2.drawKeypoints(img, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
     idx = 0
     for keypoint in keypoints:
-        print(keypoint)
         coord = (int(keypoint.pt[0]), int(keypoint.pt[1]) )
-#        cv2.putText(img=img_with_points, text=str(idx), org=(keypoint.pt[0], keypoint.pt[1]), fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=1, color=(0, 255, 0),thickness=1)
-        cv2.putText(img=img_with_points, text=str(idx), org=coord, fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=1, color=(0, 255, 0),thickness=1)
+        cv2.putText(img=img_with_points, text=str(idx), org=coord, fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=(0, 255, 0),thickness=1)
         idx += 1 
     return img_with_points
 

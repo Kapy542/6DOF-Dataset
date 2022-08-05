@@ -1,4 +1,15 @@
-Goal is to use ready packages as much as possible. Python OpenCV camera calibration tool for RGB ToF Stereo Calibration with dotted retroreflective checker board. (So it is well visible and accurate in ToF's intensity image). In order to calibrate and find transformation between RGB and optitrack system which has it own coordinate space same checker is used. We know dot's pixel coordinates in RGB image by running calibration tool for it. We also know dot's position in 3D space in optitrack coordinate system. Solving transformation between RGB camera center and ooptitrack coordinates is a perspective-n-point problem which can be solved with opencv's (cv::SOLVEPNP_ITERATIVE) method. Function is based on a Levenberg-Marquardt optimization and DLT algorithm [1].
+Goal is to use ready packages as much as possible. Python OpenCV camera calibration tool for RGB ToF Stereo Calibration with dotted retroreflective checker board. (So it is well visible and accurate in ToF's intensity image). 
+In order to calibrate and find transformation between RGB and optitrack system which has it own coordinate space same checker is used. We know dot's pixel coordinates in RGB image by running opencv blob detector for it. (opencv blob detector https://docs.opencv.org/4.x/d0/d7a/classcv_1_1SimpleBlobDetector.html)
+Parameters detector was handpicked for particular test calibration sequence by testing different values. Area, Threshold, Circularity, Inertia, and Convexity. By setting area parameter to proper value we can filter out images where checker is too far away. 
+With high value on inertia filter images with high motion blur can be filtered out. By setting circularity and convexity high enough we can filter out any other unwanted circle like object in the image. Threshold is just used in image binarization and sinze our blobs are gray like it is set to around 100.
+Motion blur can be caused by moving the checker to new position or small wiggling after that. If there are multiple sequentical images with all blobs well visible (no motion blur) middle one is used in the calibration.
+Checker is on tripod so in there should plenty images with zero motion blur an those are used by picking image from the center of the stream where checker stopped and checker started moving. idx to use = first_idx + (last_idx - first_idx)/2.
+
+
+And then run camera calibration https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html
+
+We also know dot's position in 3D space in optitrack coordinate system. Solving transformation between RGB camera center and optitrack coordinates is a perspective-n-point problem which can be solved with opencv's (cv::SOLVEPNP_ITERATIVE) method. 
+Function is based on a Levenberg-Marquardt optimization and DLT algorithm [1].
 OR 
 (cv::SOLVEPNP_EPNP) Method has been introduced by F. Moreno-Noguer, V. Lepetit and P. Fua in the paper "EPnP: Efficient Perspective-n-Point Camera Pose Estimation" ([140]).
 !!! Ei tarkka, älä käytä !!!
@@ -8,7 +19,7 @@ With SOLVEPNP_IPPE input points must be >= 4 and object points must be coplanar.
 TAI 
 
 ? Vie pisteet/pallot kamerasta 3d ?
-% Aja icp n läpi mocap datan kanssa ?
+% Aja least squares n läpi mocap datan kanssa ?
 
 ? Run on few images ?
 ? Remove outlier transformations ?
@@ -18,6 +29,7 @@ TAI
 
 
 
-Because RGB has slightly bigger field-of-view than ToF, different images are used for stereo and RGB intrinsic calibration. In stereo calibration Checker is moved in the space so that it is always visible to both cameras and covers still as much of the image as possible. In optitrack calibration checker is shown only to RGB camera and again as much coverage as possible. Now when we don't need to care about ToF overlap, we can cover whole RGB image and therefore we can expect better calibration results. For this reason.
+Because RGB has slightly bigger field-of-view than ToF, different images are used for stereo and RGB intrinsic calibration. In stereo calibration Checker is moved in the space so that it is always visible to both cameras and covers still as much of the image as possible. 
+In optitrack calibration checker is shown only to RGB camera and again as much coverage as possible. Now when we don't need to care about ToF overlap, we can cover whole RGB image and therefore we can expect better calibration results. For this reason.
 
 In short stereo extrinsics and ToF intrinsics are calculated from stereo images. RGB intrinsics and RGB-MoCap transformation are calulated from RGB-MoCap data pairs.
