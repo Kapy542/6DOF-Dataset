@@ -7,7 +7,7 @@ import cv2
 import matplotlib.pyplot as plt
 from funcs.ImgReader import ImgReader
 from funcs.mocap import read_csv, get_xyz, get_checker_coords, get_good_frames
-from funcs.checker_calibration import create_detector, detect_points, draw_points, remove_outliers, order_checkerpoints
+from funcs.checker_calibration import create_detector, detect_points, draw_points, remove_outliers, order_checkerpoints, extract_2d
 import argparse
 import os
 # %matplotlib qt
@@ -53,7 +53,7 @@ img_reader = ImgReader(take_path)
 img_reader.set_idx(idx)
 img = img_reader.img_1
 
-# Create blob detector
+# Create blob detector and detect blobs
 detector = create_detector()
 keypoints = detect_points(img, detector)
 img_with_points = draw_points(img, keypoints)
@@ -62,11 +62,10 @@ cv2.namedWindow('window', cv2.WINDOW_NORMAL)
 cv2.imshow("window", img_with_points)       
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-#plt.imshow(img_with_points)
 
-
-parsed_keypoints = remove_outliers(keypoints)
-ordered_keypoints = order_checkerpoints(parsed_keypoints)
+# Parse and order
+parsed_keypoints = remove_outliers(keypoints) # Parse out blobs that are not part of the checer
+ordered_keypoints = order_checkerpoints(parsed_keypoints) # Order them to match mocap data
 img_with_points = draw_points(img, ordered_keypoints)
 
 cv2.namedWindow('window', cv2.WINDOW_NORMAL)
@@ -74,19 +73,32 @@ cv2.imshow("window", img_with_points)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
+# Everything good so add to the list
+ thisdict =	{
+   "idx": idx,
+   "xy": extract_2d(ordered_keypoints),
+   "xyz": get_checker_coords(idx, df),
+   "img": img
+ }
+ cal_data = []
+ cal_data.append(thisdict)
+ 
+# Calibrate with data we have
+ calibration_data = calibrate(cal_data):
+
 del img_reader
 
 #%% Detect dots
 
 # CHECKERBOARD = (7,5)
-
-
+#
+#
 # thisdict =	{
 #   "idx": idx,
-#   "xy": (1,2),
+#   "xy": extract_2d(ordered_keypoints),
 #   "xyz": get_checker_coords(idx, df),
 #   "img": img
 # }
-
+#
 # cal_data = []
 # cal_data.append(thisdict)

@@ -4,6 +4,10 @@
 import numpy as np
 import cv2
 
+# TODO: check this
+CHECKERBOARD = np.zeros((5*7,3), np.float32)
+CHECKERBOARD[:,:2] = np.mgrid[0:5,0:7].T.reshape(-1,2)
+
 # Create blob detector with specified settings
 def create_detector():
     
@@ -72,7 +76,7 @@ def remove_outliers(keypoints):
 
 # TODO: Better algorithm to accept more extreme cases?
 # Reorder points on the checker to match with the MoCap data
-# Top-left point is the first one, one on the right next one, ... row by row
+# Top-left point is the first one, one on the below next one, ... col by col
 # Works only when checker rotation relatively small
 def order_checkerpoints(keypoints):
     coords = extract_2d(keypoints)
@@ -117,6 +121,15 @@ def draw_points(img, keypoints):
     return img_with_points
 
 # TODO: Calibrate 
-# Input: list of image paths
-def calibrate():
+# Input: list of blob coordinates [x,y]
+def calibrate(cal_data):
+    
+#    num_of_frames = 
+    
+    # Arrays to store object points and image points from all the images.
+    objpoints = [] # 3d point in real world space
+    imgpoints = [] # 2d points in image plane.
+    
+#    ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
+    
     return False

@@ -33,6 +33,7 @@ def get_checker_coords(idx, df):
     return coords
 
 # TODO: Check sync between cams and optitrack (FPS_MULT)
+# Change of position between frames and pick local_mins ?
 # Get good frame idxs. Good frame = checker is not moving
 # Get one index on the middle of stationary period
 def get_good_frames(df):

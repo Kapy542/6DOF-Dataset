@@ -1,0 +1,3 @@
+Other usage for this calibration system could be in virtual production. Here some elements like background, foreground object, other animated actors are in live time projected to the led screen behind the scene or in camera viewfinder with green screen. There would be some kind of tracking system similiar to OptiTrack which track the camera. In order to get accurate representation of the scene exact location and orientasion of the camera center and camera's intrinsics are required.
+
+
