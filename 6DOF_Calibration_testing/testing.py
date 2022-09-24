@@ -6,7 +6,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 from funcs.ImgReader import ImgReader
-from funcs.mocap import read_csv, get_xyz, get_checker_coords
+from funcs.mocap import read_csv, get_xyz, get_checker_coords, get_good_frames
 from funcs.checker_calibration import create_detector, detect_points, draw_points, remove_outliers, order_checkerpoints
 import argparse
 import os
@@ -17,7 +17,7 @@ import os
 # Initialize paths
 take_folder = "./"
 take_name = "dotted_checker_1"
-# take_folder = "/home/kapyla/Desktop/KandiVol2/6DOF_Calibration_testing"
+# take_folder = "/home/kapyla./Desktop/KandiVol2/6DOF_Calibration_testing"
 
 out_path = os.path.join(take_folder, "out")
 take_path = os.path.join(take_folder, "CameraData", take_name)
@@ -28,6 +28,10 @@ out_dir = os.path.join(out_path, subject_name)
 
 # Read MoCap data
 df = read_csv(take_folder, take_name)
+good_frames = get_good_frames(df)
+x = np.arange(0, len(good_frames))
+plt.plot(x, good_frames)
+#%%
 
 idx = 180 # Hyvä kuva ilman motionblurria
 #idx = 320 # Hyvä kuva ilman motionblurria

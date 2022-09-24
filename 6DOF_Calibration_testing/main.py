@@ -69,3 +69,28 @@ ret, corners = cv2.findCirclesGrid(gray, CHECKERBOARD, None, flags=(cv2.CALIB_CB
 #
 #cv2.destroyAllWindows()
 #del img_reader
+
+
+
+#%% Extract calibration images
+
+# Initialize variables
+
+# Get good frames from the mocap (middle of the stationary period) (mocap.py)
+
+# Go through the images in a for loop
+
+    # Check if img is good (checker_calibration.py)
+    
+    # Try calibration only with this one?
+    
+    # If previous succesfull: add to the list
+    
+# Parse some of the images? Coverage
+
+# Save everything in the list (imgs, blob coordinates, mocap coordinates)
+    
+    
+#%% Calibrate
+
+# 

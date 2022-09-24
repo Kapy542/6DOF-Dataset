@@ -45,7 +45,7 @@ def create_detector():
     
     return detector
 
-# Run detector for img and return coordinates
+# Run detector for img and return blob coordinates (keypoints)
 def detect_points(img, detector):
     
     # Convert to grayscale (not necessary)
@@ -56,25 +56,32 @@ def detect_points(img, detector):
     
     return key_points
 
-# Draw points and their indx onto img
-def draw_points(img, keypoints):
-    img_with_points = cv2.drawKeypoints(img, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    idx = 0
-    for keypoint in keypoints:
-        coord = (int(keypoint.pt[0]), int(keypoint.pt[1]) )
-        cv2.putText(img=img_with_points, text=str(idx), org=coord, fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=(0, 255, 0),thickness=1)
-        idx += 1 
-    return img_with_points
+# TODO: Better algorithm to accept more extreme cases?
+# Remove outliers so that there are exactly 35 points left
+# Use mean position of the points and pick 35 points that are closest to that
+# Does not guarantee that all points are part of the checker but works well enough
+def remove_outliers(keypoints):
+    coords = extract_2d(keypoints)
+    
+    # Pick 35 points that are closest to the mean
+    mean = np.mean(coords, axis=0)
+    dist = np.linalg.norm(coords - mean, axis=1)
+    min_idxs = dist.argsort()[:35]
+    new_keypoints = [keypoints[i] for i in min_idxs]
+    return new_keypoints
 
-# Reorder points on checker to match with MoCap data
+# TODO: Better algorithm to accept more extreme cases?
+# Reorder points on the checker to match with the MoCap data
+# Top-left point is the first one, one on the right next one, ... row by row
+# Works only when checker rotation relatively small
 def order_checkerpoints(keypoints):
     coords = extract_2d(keypoints)
-    coords = coords * np.array([[5,1]])
-    xy_sum = np.sum(coords,axis=1)
+    # Multiply y-coordinate by 5 (number of cols) to create bigger difference between rows
+    coords = coords * np.array([[5,1]]) 
+    # Sum x and y, sort based on that
+    xy_sum = np.sum(coords,axis=1) 
     min_idxs = xy_sum.argsort()
     ordered_keypoints = [keypoints[i] for i in min_idxs]
-#    coords = coords * np.array([[1,10]])
-#    ordered_points = keypoints
     return ordered_keypoints
 
 # Extract only 2d positions from keypoints
@@ -93,27 +100,23 @@ def checker_points_found(keypoints):
         return False
     return True
 
-# Is this frame good for calibration based on checker detection
+# Is this frame good for calibration based on checker blob detection
 def is_good_frame(keypoints):
     if not checker_points_found(keypoints):
         return False
     return True
 
-# Remove outliers so that there are exactly 35 points left
-# Use mean position of the points and pick 35 points that are closest to that
-# Does not guarantee that all points are part of the checer
-def remove_outliers(keypoints):
-    coords = extract_2d(keypoints)
-    
-    # Pick 35 points that are closest to the mean
-    mean = np.mean(coords, axis=0)
-    dist = np.linalg.norm(coords - mean, axis=1)
-    min_idxs = dist.argsort()[:35]
-    new_keypoints = [keypoints[i] for i in min_idxs]
-    return new_keypoints
+# Draw points and their indx onto img
+def draw_points(img, keypoints):
+    img_with_points = cv2.drawKeypoints(img, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+    idx = 0
+    for keypoint in keypoints:
+        coord = (int(keypoint.pt[0]), int(keypoint.pt[1]) )
+        cv2.putText(img=img_with_points, text=str(idx), org=coord, fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=(0, 255, 0),thickness=1)
+        idx += 1 
+    return img_with_points
 
-
-
-# Calibrate 
+# TODO: Calibrate 
+# Input: list of image paths
 def calibrate():
     return False
