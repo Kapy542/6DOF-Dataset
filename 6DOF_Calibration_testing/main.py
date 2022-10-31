@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# TODO: Lots of tests to verify sync between mocap and rgb
+
 from ImgReader import ImgReader
 from utils import read_csv
 import numpy as np
