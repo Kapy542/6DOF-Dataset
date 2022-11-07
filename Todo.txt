@@ -1,0 +1,14 @@
+- Blob detector ja camera calibration omiin tiedostoihin?
+
+-- Toteuta niin että löytyy tarvittavat asiat muihin käyttötarkoituksiin. Esim. VR + optitrack + jalkapallo demo?
+- Tarvitaan calibrointi ja matriisien vienti järkevään muotoon. Luetaan Python, c++, unreal, unity, yms...
+- Ota käytettävyys eri kameroilla, eri resoluutioilla huomioon joka kohdassa.
+- FPS mult järkeväksi järkevään paikkaan
+
+- Mikä metodi opencv:n calibration algo?
+
+-- Mikä metodi?
+- Least squares https://stackoverflow.com/questions/11687281/transformation-between-two-set-of-points
+- ICP
+- https://lucidar.me/en/mathematics/calculating-the-transformation-between-two-set-of-points/
+- Perspective-n-Point problem
